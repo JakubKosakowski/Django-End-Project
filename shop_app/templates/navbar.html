@@ -1,0 +1,14 @@
+<nav>
+   <ul>
+       <li><a href="{% url 'home-page' %}">Shop</a></li>
+       <li><a href="#">About</a></li>
+       <li><a href="#">Offers</a></li>
+       <li><a href="">Cart</a></li>
+       {% if user.is_authenticated %}
+           <li><a href="{% url 'logout' %}">Logout</a></li>
+       {% else %}
+           <li><a href="{% url 'login-page' %}">Login</a></li>
+       {% endif %}
+
+   </ul>
+</nav>
