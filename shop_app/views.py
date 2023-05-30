@@ -26,3 +26,9 @@ class LoginView(View):
                 login(request, user)
                 return redirect('home-page')
             return render(request, 'login.html', {'form': form, 'info': 'Zły login lub hasło!'})
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home-page')
