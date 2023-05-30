@@ -20,4 +20,5 @@ from shop_app.views import *
 
 urlpatterns = [
     path('', HomePageView.as_view(), name="home-page"),
+    path('login/', LoginView.as_view(), name="login-page")
 ]
