@@ -11,3 +11,8 @@ class Product(models.Model):
     description = models.TextField()
     available = models.IntegerField(default=100)
     categories = models.ManyToManyField(Category)
+
+
+class Account(models.Model):
+    login = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
