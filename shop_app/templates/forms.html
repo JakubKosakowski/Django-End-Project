@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Logowanie
+{{ title }}
 {% endblock %}
 
 {% block content %}
-    <h2>Logowanie</h2>
+    <h2>{{ title }}</h2>
     {{ info }}
     <form action="" method="POST">
     {% csrf_token %}
