@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -13,6 +13,9 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category)
 
 
-class Account(models.Model):
-    login = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
+class Customer(models.Model):
+    account = models.ForeignKey(User, on_delete=models.CASCADE)
+    street = models.CharField(max_length=60)
+    postal_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=60)
+    country = models.CharField(max_length=50)
