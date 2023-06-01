@@ -35,7 +35,7 @@ class LoginView(View):
 class RegisterView(FormView):
     form_class = RegisterForm
     success_url = reverse_lazy('login-page')
-    template_name = 'forms.html'
+    template_name = 'register.html'
 
     def form_valid(self, form):
         user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
@@ -61,3 +61,19 @@ class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
         data = Customer.objects.get(account=request.user)
         return render(request, 'profile.html', {'data': data})
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = ChangePasswordForm()
+        return render(request, 'change-passwd.html', {'form': form})
+
+    def post(self, request):
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['new_password'] != form.cleaned_data['repeat_new_password']:
+                return render(request, 'change-passwd.html', {'form': form, 'info': 'Te hasła nie są takie same!'})
+            request.user.set_password(form.cleaned_data['new_password'])
+            request.user.save()
+            return redirect('user-profile')
+        
