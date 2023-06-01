@@ -28,3 +28,8 @@ class RegisterForm(forms.Form):
         if data['password'] != data['password_rep']:
             raise forms.ValidationError('Wprowadzone hasła nie pasują do siebie')
         return data
+
+
+class ChangePasswordForm(forms.Form):
+    new_password = forms.CharField(label="Nowe hasło", widget=forms.PasswordInput)
+    repeat_new_password = forms.CharField(label="Powtórz nowe hasło", widget=forms.PasswordInput)
