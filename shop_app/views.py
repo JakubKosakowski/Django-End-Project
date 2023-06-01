@@ -5,6 +5,8 @@ from .forms import *
 from .models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy, reverse
+from django.views.generic.edit import FormView
 
 
 class HomePageView(View):
@@ -29,25 +31,23 @@ class LoginView(View):
             return render(request, 'forms.html', {'form': form, 'title': 'Logowanie', 'info': 'Zły login lub hasło!'})
 
 
-class RegisterView(View):
-    def get(self, request):
-        form = RegisterForm()
-        return render(request, 'forms.html', {'form': form, 'title': 'Rejestracja'})
+class RegisterView(FormView):
+    form_class = RegisterForm
+    success_url = reverse_lazy('login-page')
+    template_name = 'forms.html'
 
-    def post(self, request):
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
-                                            form.cleaned_data['password'])
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
-            Customer.objects.create(account=user,
-                                    street=form.cleaned_data['street'],
-                                    postal_code=form.cleaned_data['postal_code'],
-                                    city=form.cleaned_data['city'],
-                                    country=form.cleaned_data['country'])
-            return redirect('login-page')
+    def form_valid(self, form):
+        user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
+                                        form.cleaned_data['password'])
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
+        user.save()
+        Customer.objects.create(account=user,
+                                street=form.cleaned_data['street'],
+                                postal_code=form.cleaned_data['postal_code'],
+                                city=form.cleaned_data['city'],
+                                country=form.cleaned_data['country'])
+        return super().form_valid(form)
 
 
 class LogoutView(View):
