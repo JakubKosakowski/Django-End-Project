@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomePageView(View):
@@ -54,3 +55,9 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('home-page')
+
+
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        data = Customer.objects.get(account=request.user)
+        return render(request, 'profile.html', {'data': data})
