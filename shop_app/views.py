@@ -76,4 +76,3 @@ class ChangePasswordView(LoginRequiredMixin, View):
             request.user.set_password(form.cleaned_data['new_password'])
             request.user.save()
             return redirect('user-profile')
-        

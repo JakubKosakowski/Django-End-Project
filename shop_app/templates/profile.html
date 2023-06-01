@@ -9,5 +9,5 @@ Profil użytkownika
     <h3>Imię i nazwisko: </h3>{{ data.account.first_name }} {{ data.account.last_name }}
     <h3>Adres email: </h3>{{ data.account.email }}
     <h3>Adres zamieszkania: </h3>{{ data.street }} | {{ data.postal_code }} {{ data.city }} | {{ data.country }}<br><br>
-    <a href="#">Zmień hasło</a>
+    <a href="{% url 'change-passwd' %}">Zmień hasło</a>
 {% endblock %}
