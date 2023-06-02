@@ -21,3 +21,26 @@
 .nav a:hover {
   background-color: #7A918D;
 }
+
+.offers {
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.product {
+  width: 200px;
+  margin: 30px;
+  border: solid 3px black;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.product:hover {
+  transform: scale(1.2);
+}
+
+.product-a {
+  text-decoration: none;
+  color: black;
+}

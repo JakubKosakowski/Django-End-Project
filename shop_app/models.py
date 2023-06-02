@@ -10,6 +10,7 @@ class Product(models.Model):
     name = models.CharField()
     description = models.TextField()
     available = models.IntegerField(default=100)
+    price = models.DecimalField(null=True, max_digits=6, decimal_places=2)
     categories = models.ManyToManyField(Category)
 
 
