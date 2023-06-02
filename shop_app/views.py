@@ -76,3 +76,9 @@ class ChangePasswordView(LoginRequiredMixin, View):
             request.user.set_password(form.cleaned_data['new_password'])
             request.user.save()
             return redirect('user-profile')
+
+
+class OffersView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, 'offers.html', {'products': products})
