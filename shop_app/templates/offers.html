@@ -9,7 +9,9 @@ Oferta sklepu
     <div class="offers">
         {% for product in products %}
         <div class="product">
-            <strong>{{ product.name }}</strong>
+            <p><strong>{{ product.name }}</strong></p>
+            <p><i>{{ product.description }}</i></p>
+            <p>Cena: {{ product.price }} PLN</p>
         </div>
         {% endfor %}
     </div>

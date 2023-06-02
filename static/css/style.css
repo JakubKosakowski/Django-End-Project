@@ -21,3 +21,12 @@
 .nav a:hover {
   background-color: #7A918D;
 }
+
+.offers {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product {
+  width: 200px;
+}
