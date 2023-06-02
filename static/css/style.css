@@ -23,10 +23,24 @@
 }
 
 .offers {
+  margin: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .product {
   width: 200px;
+  margin: 30px;
+  border: solid 3px black;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.product:hover {
+  transform: scale(1.2);
+}
+
+.product-a {
+  text-decoration: none;
+  color: black;
 }

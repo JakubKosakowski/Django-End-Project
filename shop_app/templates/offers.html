@@ -8,11 +8,13 @@ Oferta sklepu
 <h2>Oferta sklepu</h2>
     <div class="offers">
         {% for product in products %}
-        <div class="product">
-            <p><strong>{{ product.name }}</strong></p>
-            <p><i>{{ product.description }}</i></p>
-            <p>Cena: {{ product.price }} PLN</p>
-        </div>
+        <a href="#" class="product-a">
+            <div class="product">
+                <p><strong>{{ product.name }}</strong></p>
+                <p><i>{{ product.description }}</i></p>
+                <p>Cena: {{ product.price }} PLN</p>
+            </div>
+        </a>
         {% endfor %}
     </div>
 {% endblock %}
