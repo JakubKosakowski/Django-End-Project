@@ -25,5 +25,6 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name="user-profile"),
     path('change-passwd/', ChangePasswordView.as_view(), name="change-passwd"),
     path('logout/', LogoutView.as_view(), name="logout"),
-    path('offers/', OffersView.as_view(), name="offers")
+    path('offers/', OffersView.as_view(), name="offers"),
+    path('product/<int:id>/', ProductDetailsView.as_view(), name="product-details")
 ]

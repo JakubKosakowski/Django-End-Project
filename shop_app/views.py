@@ -82,3 +82,9 @@ class OffersView(View):
     def get(self, request):
         products = Product.objects.all()
         return render(request, 'offers.html', {'products': products})
+
+
+class ProductDetailsView(View):
+    def get(self, request, id):
+        product = Product.objects.get(id=id)
+        return render(request, 'product-details.html', {'product': product})
