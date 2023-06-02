@@ -9,4 +9,14 @@ Szczegóły produktu
 <h2>Nazwa produktu: </h2>{{ product.name }}
 <h2>Opis: </h2>{{ product.description }}
 <h2>Cena: </h2>{{ product.price }} PLN
+<div class="amount">
+    <h3>Ilość: </h3>
+    {% csrf_token %}
+    <form action="" method="POST">
+        <input class="amount-number" type="number" value="1">
+        <button type="button" class="add">+</button>
+        <button type="button" class="sub">-</button>
+    </form>
+</div>
+<script src="/static/js/script.js"></script>
 {% endblock %}
