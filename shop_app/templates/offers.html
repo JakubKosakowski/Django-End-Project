@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Oferta sklepu
+{% endblock %}
+
+{% block content %}
+<h2>Oferta sklepu</h2>
+    <div class="offers">
+        {% for product in products %}
+        <div class="product">
+            <strong>{{ product.name }}</strong>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
