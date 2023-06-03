@@ -9,6 +9,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+cart_number = 1
 
 class HomePageView(View):
     def get(self, request):
@@ -88,3 +89,33 @@ class ProductDetailsView(View):
     def get(self, request, id):
         product = Product.objects.get(id=id)
         return render(request, 'product-details.html', {'product': product})
+
+    def post(self, request, id):
+        global cart_number
+        quantity = float(request.POST.get('amount-number'))
+        ordered_product = Product.objects.get(id=id)
+        product_dict = {
+            str(cart_number): {
+                'name': ordered_product.name,
+                'price': ordered_product.price,
+                'quantity': quantity
+            }
+        }
+        all_total_price = 0
+        request.session['modified'] = True
+        if 'cart_item' in request.session:
+            pass
+        else:
+            request.session['cart_item'] = product_dict
+            all_total_price += quantity * float(ordered_product.price)
+            cart_number += 1
+
+        request.session['all_total_price'] = all_total_price
+
+        return redirect('cart')
+
+
+class CartView(View):
+    def get(self, request):
+        info = request.session.items()
+        return render(request, 'cart.html', {'info': info, 'title': 'Koszyk'})

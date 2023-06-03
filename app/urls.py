@@ -26,5 +26,6 @@ urlpatterns = [
     path('change-passwd/', ChangePasswordView.as_view(), name="change-passwd"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('offers/', OffersView.as_view(), name="offers"),
+    path('cart/', CartView.as_view(), name="cart"),
     path('product/<int:id>/', ProductDetailsView.as_view(), name="product-details")
 ]
