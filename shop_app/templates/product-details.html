@@ -13,8 +13,7 @@ Szczegóły produktu
     <h3>Ilość: </h3>
     <form action="" method="POST">
         {% csrf_token %}
-        <input class="amount-number" type="number" value="1">
-        <input type="hidden" value="{{ product.id }}">
+        <input class="amount-number" name="amount-number" type="number" value="1">
         <button type="button" class="add">+</button>
         <button type="button" class="sub">-</button><br><br>
         <button type="submit" class="order">Order</button>
