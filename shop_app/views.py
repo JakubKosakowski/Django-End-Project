@@ -97,7 +97,7 @@ class ProductDetailsView(View):
         product_dict = {
             str(cart_number): {
                 'name': ordered_product.name,
-                'price': ordered_product.price,
+                'price': float(ordered_product.price),
                 'quantity': quantity
             }
         }
@@ -117,5 +117,5 @@ class ProductDetailsView(View):
 
 class CartView(View):
     def get(self, request):
-        info = request.session.items()
+        info = request.session.get('cart_item').items()
         return render(request, 'cart.html', {'info': info, 'title': 'Koszyk'})

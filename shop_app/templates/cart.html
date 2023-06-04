@@ -5,5 +5,8 @@
 {% endblock %}
 
 {% block content %}
-    Cart: {{ info }}
+    Cart:
+    {% for key, value in info %}
+        {{ value.name }}
+    {% endfor %}
 {% endblock %}
