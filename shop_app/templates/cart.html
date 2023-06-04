@@ -6,6 +6,8 @@
 
 {% block content %}
     {% if info %}
+        <br>
+        <button><a href="{% url 'order' %}" style="text-decoration: none; color: black">Złóż zamówienie</a></button><br><br>
         {{ title }}:
         <table style="background-color: white; margin: 10px;">
         <tr>
