@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import request
+from django.http import request, HttpResponse
 from django.views import View
 from .forms import *
 from .models import *
@@ -172,3 +172,8 @@ class DeleteCartProductView(View):
 
         cart_number -= 1
         return redirect('cart')
+
+
+class OrderView(View):
+    def get(self, request):
+        return HttpResponse("<h1>Order site</h1>")
