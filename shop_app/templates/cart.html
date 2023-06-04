@@ -5,5 +5,23 @@
 {% endblock %}
 
 {% block content %}
-    Cart: {{ info }}
+    Cart:
+    <table style="background-color: white; margin: 10px;">
+    <tr>
+        <th>Product name</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+        <th>Total price</th>
+    </tr>
+
+    {% for key, value in info %}
+    <tr>
+        <td>{{ value.name }}</td>
+        <td>{{ value.quantity }}</td>
+        <td>{{ value.price }}</td>
+        <td>{{ value.total_price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<strong>Cena całkowita: </strong> {{ price }} PLN
 {% endblock %}

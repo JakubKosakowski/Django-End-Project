@@ -11,6 +11,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 cart_number = 1
 
+def array_merge(first_array, second_array):
+    if isinstance(first_array, list) and isinstance(second_array, list):
+        return first_array + second_array
+    elif isinstance(first_array, dict) and isinstance(second_array, dict):
+        return dict(list(first_array.items()) + list(second_array.items()))
+    elif isinstance(first_array, set) and isinstance(second_array, set):
+        return first_array.union(second_array)
+    return False
+
 class HomePageView(View):
     def get(self, request):
         return render(request, 'home.html')
@@ -92,19 +101,34 @@ class ProductDetailsView(View):
 
     def post(self, request, id):
         global cart_number
-        quantity = float(request.POST.get('amount-number'))
+        quantity = int(request.POST.get('amount-number'))
         ordered_product = Product.objects.get(id=id)
         product_dict = {
             str(cart_number): {
+                'id': int(id),
                 'name': ordered_product.name,
-                'price': ordered_product.price,
-                'quantity': quantity
+                'price': float(ordered_product.price),
+                'quantity': quantity,
+                'total_price': float(ordered_product.price) * quantity
             }
         }
         all_total_price = 0
         request.session['modified'] = True
+        flag = True
         if 'cart_item' in request.session:
-            pass
+            for key, value in request.session['cart_item'].items():
+                if id == request.session['cart_item'][key]['id']:
+                    old_quantity = request.session['cart_item'][key]['quantity']
+                    total_quantity = old_quantity + quantity
+                    request.session['cart_item'][key]['quantity'] = total_quantity
+                    request.session['cart_item'][key]['total_price'] = round(
+                        total_quantity * float(ordered_product.price), 2)
+                    flag = False
+            if flag:
+                request.session['cart_item'] = array_merge(request.session['cart_item'], product_dict)
+                cart_number += 1
+            for key, value in request.session['cart_item'].items():
+                all_total_price += round(request.session['cart_item'][key]['total_price'], 2)
         else:
             request.session['cart_item'] = product_dict
             all_total_price += quantity * float(ordered_product.price)
@@ -117,5 +141,5 @@ class ProductDetailsView(View):
 
 class CartView(View):
     def get(self, request):
-        info = request.session.items()
-        return render(request, 'cart.html', {'info': info, 'title': 'Koszyk'})
+        info = request.session.get('cart_item').items()
+        return render(request, 'cart.html', {'info': info, 'price': request.session.get('all_total_price'), 'title': 'Koszyk'})
