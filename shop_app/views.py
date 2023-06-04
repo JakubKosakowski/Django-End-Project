@@ -3,11 +3,16 @@ from django.http import request, HttpResponse
 from django.views import View
 from .forms import *
 from .models import *
+import random
+import string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
 
 cart_number = 1
 
@@ -176,4 +181,46 @@ class DeleteCartProductView(View):
 
 class OrderView(View):
     def get(self, request):
-        return HttpResponse("<h1>Order site</h1>")
+        global cart_number
+        characters = string.ascii_letters + string.digits
+        code = ''.join(random.choice(characters) for i in range(10))
+        cart_item = request.session['cart_item']
+        customer = Customer.objects.get(account=request.user)
+        sender_email = 'jkosakowski602@gmail.com'
+        password = 'mzlskaagjaadqojt'
+        subject = f"Zamówienie nr. {code}"
+        message = f"""Witaj, {request.user.first_name} {request.user.last_name}, Twoje zamówienie o kodzie
+                {code} jest w trakcie realizacji!\n
+                Twoje zamówienie:\nNazwa produktu  |  Ilość  |  Cena za sztuke  |  Cena całkowita  |\n\n"""
+        order = Order.objects.create(code=code, order_owner=customer, total_price=request.session['all_total_price'])
+        for key, value in cart_item.items():
+            OrderDetails.objects.create(
+                product=Product.objects.get(id=value['id']),
+                order=order,
+                quantity=value['quantity'],
+                price_per_unit=value['price'],
+                total_price=value['total_price'])
+            message += f"""{value['name']}  |  {value['quantity']}  |  {value['price']}  |  {value['total_price']}"""
+        message += f"""\nCałkowita kwota Twojego zamówienia to {format(request.session['all_total_price'])} złotych."""
+        cart_number = 1
+        request.session.pop('cart_item', None)
+        request.session.pop('all_total_price', None)
+
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = request.user.email
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(message, 'plain'))
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+
+        server.login(sender_email, password)
+
+        text = msg.as_string()
+        server.sendmail(sender_email, request.user.email, text)
+
+        server.quit()
+
+        return redirect('home-page')

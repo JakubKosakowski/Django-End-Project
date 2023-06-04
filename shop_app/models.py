@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import date
+from django.utils.timezone import now
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -25,9 +25,10 @@ class Customer(models.Model):
 
 class Order(models.Model):
     code = models.CharField(max_length=10, unique=True)
-    order_date = models.DateField(default=date.today())
+    order_date = models.DateField(default=now())
     order_owner = models.ForeignKey(Customer, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='OrderDetails')
+    total_price = models.DecimalField(null=True, max_digits=10, decimal_places=2)
 
 
 class OrderDetails(models.Model):
@@ -35,3 +36,4 @@ class OrderDetails(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     price_per_unit = models.DecimalField(max_digits=6, decimal_places=2)
     quantity = models.IntegerField()
+    total_price = models.DecimalField(null=True, max_digits=10, decimal_places=2)
