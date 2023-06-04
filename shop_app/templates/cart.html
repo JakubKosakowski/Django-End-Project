@@ -21,6 +21,7 @@
             <td>{{ value.quantity }}</td>
             <td>{{ value.price }}</td>
             <td>{{ value.total_price }}</td>
+            <td><button><a href="{% url 'delete' id=key %}" style="color: black; text-decoration: none;">Usuń</a></button></td>
         </tr>
         {% endfor %}
     </table>

@@ -152,3 +152,23 @@ class ClearCartView(View):
         request.session.pop('cart_item', default=None)
         request.session.pop('all_total_price', default=None)
         return redirect('cart')
+
+
+class DeleteCartProductView(View):
+    def get(self, request, id):
+        global cart_number
+        all_total_price = 0
+        for item in request.session['cart_item'].items():
+            if int(item[0]) == id:
+                request.session['cart_item'].pop(item[0], None)
+                if 'cart_item' in request.session:
+                    for key, value in request.session['cart_item'].items():
+                        all_total_price += int(request.session['cart_item'][key]['total_price'])
+                break
+        if all_total_price == 0:
+            request.session.clear()
+        else:
+            request.session['all_total_price'] = round(all_total_price, 2)
+
+        cart_number -= 1
+        return redirect('cart')
