@@ -141,5 +141,14 @@ class ProductDetailsView(View):
 
 class CartView(View):
     def get(self, request):
-        info = request.session.get('cart_item').items()
+        info = request.session.get('cart_item')
         return render(request, 'cart.html', {'info': info, 'price': request.session.get('all_total_price'), 'title': 'Koszyk'})
+
+
+class ClearCartView(View):
+    def get(self, request):
+        global cart_number
+        cart_number = 1
+        request.session.pop('cart_item', default=None)
+        request.session.pop('all_total_price', default=None)
+        return redirect('cart')

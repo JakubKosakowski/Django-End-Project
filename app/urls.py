@@ -27,5 +27,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name="logout"),
     path('offers/', OffersView.as_view(), name="offers"),
     path('cart/', CartView.as_view(), name="cart"),
+    path('clean/', ClearCartView.as_view(), name="clean-cart"),
     path('product/<int:id>/', ProductDetailsView.as_view(), name="product-details")
 ]

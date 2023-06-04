@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    Cart:
+    {{ title }}:
     <table style="background-color: white; margin: 10px;">
     <tr>
         <th>Product name</th>
@@ -14,7 +14,7 @@
         <th>Total price</th>
     </tr>
 
-    {% for key, value in info %}
+    {% for key, value in info.items %}
     <tr>
         <td>{{ value.name }}</td>
         <td>{{ value.quantity }}</td>
@@ -23,5 +23,6 @@
     </tr>
     {% endfor %}
 </table>
-<strong>Cena całkowita: </strong> {{ price }} PLN
+<strong>Cena całkowita: </strong> {{ price }} PLN<br><br>
+<button type="button"><a href="{% url 'clean-cart' %}" style="text-decoration: none; color: black;">Wyczyść koszyk</a></button>
 {% endblock %}
