@@ -8,10 +8,11 @@ Oferta sklepu
 {% block content %}
 <h2>Oferta sklepu</h2>
     <form action="" method="POST" style="font-size: 20px;">
+      {% csrf_token %}
       <label for="phrase">Search: </label>
       <input type="text" name="phrase" id="phrase"/><br><br>
       {% for category in categories %}
-        <input type="checkbox" name="{{ category.name }}"/>
+        <input type="checkbox" id="{{ category.name }}" value="{{ category.id }}" name="search_category"/>
         <label for="{{ category.name }}">{{ category.name }}</label>
       {% endfor %}<br><br>
       Price:
