@@ -209,8 +209,11 @@ class OrderView(View):
                 Twoje zamówienie:\nNazwa produktu  |  Ilość  |  Cena za sztuke  |  Cena całkowita  |\n\n"""
         order = Order.objects.create(code=code, order_owner=customer, total_price=request.session['all_total_price'])
         for key, value in cart_item.items():
+            product = Product.objects.get(id=value['id'])
+            product.available -= value['quantity']
+            product.save()
             OrderDetails.objects.create(
-                product=Product.objects.get(id=value['id']),
+                product=product,
                 order=order,
                 quantity=value['quantity'],
                 price_per_unit=value['price'],

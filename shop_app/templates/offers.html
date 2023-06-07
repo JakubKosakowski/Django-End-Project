@@ -23,8 +23,12 @@ Oferta sklepu
     </form><br><br>
     <div class="offers">
         {% for product in products %}
-        <a href="{% url 'product-details' id=product.id %}" class="product-a">
             <div class="product">
+                {% if product.available != 0 %}
+                    <a href="{% url 'product-details' id=product.id %}" class="product-a">
+                {% else %}
+                    <p><strong style="color: red;">Brak towaru!</strong></p>
+                {% endif %}
                 <p><strong>{{ product.name }}</strong></p>
                 <p><i>{{ product.description }}</i></p>
                 <p>Cena: {{ product.price }} PLN</p>
