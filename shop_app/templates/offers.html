@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Oferta sklepu
@@ -6,10 +7,28 @@ Oferta sklepu
 
 {% block content %}
 <h2>Oferta sklepu</h2>
+    <form action="" method="POST" style="font-size: 20px;">
+      {% csrf_token %}
+      <label for="phrase">Search: </label>
+      <input type="text" name="phrase" id="phrase"/><br><br>
+      {% for category in categories %}
+        <input type="checkbox" id="{{ category.name }}" value="{{ category.id }}" name="search_category"/>
+        <label for="{{ category.name }}">{{ category.name }}</label>
+      {% endfor %}<br><br>
+      Price:
+      <div id="slider" style="width: 500px; margin: 30px;"></div>
+      <input type="number" step="0.5" name="price_min" class="price" id="price_min" placeholder="Min">
+      <input type="number" step="0.5" name="price_max" class="price" id="price_max" placeholder="Max">
+      <button type="submit" name="send" value="send">Search</button>
+    </form><br><br>
     <div class="offers">
         {% for product in products %}
-        <a href="{% url 'product-details' id=product.id %}" class="product-a">
             <div class="product">
+                {% if product.available != 0 %}
+                    <a href="{% url 'product-details' id=product.id %}" class="product-a">
+                {% else %}
+                    <p><strong style="color: red;">Brak towaru!</strong></p>
+                {% endif %}
                 <p><strong>{{ product.name }}</strong></p>
                 <p><i>{{ product.description }}</i></p>
                 <p>Cena: {{ product.price }} PLN</p>
@@ -17,4 +36,5 @@ Oferta sklepu
         </a>
         {% endfor %}
     </div>
+<script src="{% static 'js/slider.js' %}"></script>
 {% endblock %}

@@ -96,7 +96,22 @@ class ChangePasswordView(LoginRequiredMixin, View):
 class OffersView(View):
     def get(self, request):
         products = Product.objects.all()
-        return render(request, 'offers.html', {'products': products})
+        categories = Category.objects.all()
+        return render(request, 'offers.html', {'products': products, 'categories': categories})
+
+    def post(self, request):
+        categories = Category.objects.all()
+        phrase = request.POST.get('phrase')
+        search_categories = request.POST.getlist('search_category')
+        min_price = request.POST.get('price_min')
+        max_price = request.POST.get('price_max')
+        products = Product.objects.all()
+        if len(search_categories) != 0:
+            products = products.filter(categories__in=search_categories)
+        if phrase != '':
+            products = products.filter(name__icontains=phrase)
+        products = products.filter(price__gte=min_price, price__lte=max_price)
+        return render(request, 'offers.html', {'products': products, 'categories': categories})
 
 
 class ProductDetailsView(View):
@@ -194,8 +209,11 @@ class OrderView(View):
                 Twoje zamówienie:\nNazwa produktu  |  Ilość  |  Cena za sztuke  |  Cena całkowita  |\n\n"""
         order = Order.objects.create(code=code, order_owner=customer, total_price=request.session['all_total_price'])
         for key, value in cart_item.items():
+            product = Product.objects.get(id=value['id'])
+            product.available -= value['quantity']
+            product.save()
             OrderDetails.objects.create(
-                product=Product.objects.get(id=value['id']),
+                product=product,
                 order=order,
                 quantity=value['quantity'],
                 price_per_unit=value['price'],
