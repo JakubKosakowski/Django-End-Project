@@ -96,7 +96,8 @@ class ChangePasswordView(LoginRequiredMixin, View):
 class OffersView(View):
     def get(self, request):
         products = Product.objects.all()
-        return render(request, 'offers.html', {'products': products})
+        categories = Category.objects.all()
+        return render(request, 'offers.html', {'products': products, 'categories': categories})
 
 
 class ProductDetailsView(View):
