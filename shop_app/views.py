@@ -152,6 +152,8 @@ class ProductDetailsView(View):
         global cart_number
         quantity = int(request.POST.get('amount-number'))
         ordered_product = Product.objects.get(id=id)
+        if ordered_product.available < quantity:
+            return render(request, 'product-details.html', {'product': ordered_product, 'info': f"Niestety możesz zamówić maksymalnie {ordered_product.available} sztuk tego produktu!"})
         product_dict = {
             str(cart_number): {
                 'id': int(id),
