@@ -17,6 +17,7 @@ import smtplib
 cart_number = 1
 
 def array_merge(first_array, second_array):
+    """Łączenie dwóch struktur danych w jedną"""
     if isinstance(first_array, list) and isinstance(second_array, list):
         return first_array + second_array
     elif isinstance(first_array, dict) and isinstance(second_array, dict):
@@ -26,16 +27,21 @@ def array_merge(first_array, second_array):
     return False
 
 class HomePageView(View):
+    """Strona główna"""
     def get(self, request):
+        """Wyświetlenie strony głównej"""
         return render(request, 'home.html')
 
 
 class LoginView(View):
+    """Logowanie do aplikacji"""
     def get(self, request):
+        """Wyświetlenie formularza logowania"""
         form = LoginForm()
         return render(request, 'forms.html', {'form': form, 'title': 'Logowanie'})
 
     def post(self, request):
+        """Weryfikacja danych logowania i logowanie"""
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['login']
@@ -48,11 +54,13 @@ class LoginView(View):
 
 
 class RegisterView(FormView):
+    """Fomularz rejestracji na aplikacji"""
     form_class = RegisterForm
     success_url = reverse_lazy('login-page')
     template_name = 'register.html'
 
     def form_valid(self, form):
+        """Tworzenie użytkownika"""
         user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
                                         form.cleaned_data['password'])
         user.first_name = form.cleaned_data['first_name']
@@ -67,23 +75,29 @@ class RegisterView(FormView):
 
 
 class LogoutView(View):
+    """Wylogowanie użytkownika z aplikacji"""
     def get(self, request):
         logout(request)
         return redirect('home-page')
 
 
 class UserProfileView(LoginRequiredMixin, View):
+    """Wyśiwtlenie profilu użytkownika"""
     def get(self, request):
+        """Wyśiwtlenie danych użytkownika na stronie"""
         data = Customer.objects.get(account=request.user)
         return render(request, 'profile.html', {'data': data})
 
 
 class ChangePasswordView(LoginRequiredMixin, View):
+    """Zmiana hasła użytkownika"""
     def get(self, request):
+        """Wyświetlenie formularza zmiany hasła"""
         form = ChangePasswordForm()
         return render(request, 'change-passwd.html', {'form': form})
 
     def post(self, request):
+        """Weryfikacja i zmiana hasła"""
         form = ChangePasswordForm(request.POST)
         if form.is_valid():
             if form.cleaned_data['new_password'] != form.cleaned_data['repeat_new_password']:
@@ -94,12 +108,15 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
 
 class OffersView(View):
+    """Wyświetlanie asortymentu sklepu"""
     def get(self, request):
+        """Wyświetlanie wszystkich produktów"""
         products = Product.objects.all()
         categories = Category.objects.all()
         return render(request, 'offers.html', {'products': products, 'categories': categories})
 
     def post(self, request):
+        """Wyświtlanie przefiltrowanych produktów"""
         categories = Category.objects.all()
         phrase = request.POST.get('phrase')
         search_categories = request.POST.getlist('search_category')
@@ -115,11 +132,14 @@ class OffersView(View):
 
 
 class ProductDetailsView(View):
+    """Wyświetlanie szczegółów produktu"""
     def get(self, request, id):
+        """Wyświtlanie zawartości produktu"""
         product = Product.objects.get(id=id)
         return render(request, 'product-details.html', {'product': product})
 
     def post(self, request, id):
+        """Dodawanie produktu do koszyka"""
         global cart_number
         quantity = int(request.POST.get('amount-number'))
         ordered_product = Product.objects.get(id=id)
@@ -160,13 +180,17 @@ class ProductDetailsView(View):
 
 
 class CartView(View):
+    """Koszyk z asortymentem"""
     def get(self, request):
+        """Wyświetl zawartość koszyka"""
         info = request.session.get('cart_item')
         return render(request, 'cart.html', {'info': info, 'price': request.session.get('all_total_price'), 'title': 'Koszyk'})
 
 
 class ClearCartView(View):
+    """Czyszczenie koszyka z zawartości"""
     def get(self, request):
+        """Usuń wszystkie produkty z koszyka"""
         global cart_number
         cart_number = 1
         request.session.pop('cart_item', default=None)
@@ -175,7 +199,9 @@ class ClearCartView(View):
 
 
 class DeleteCartProductView(View):
+    """Usuwanie konkretnych produktów z koszyka"""
     def get(self, request, id):
+        """Usuń wybrany produkt z koszyka"""
         global cart_number
         all_total_price = 0
         for item in request.session['cart_item'].items():
@@ -195,7 +221,9 @@ class DeleteCartProductView(View):
 
 
 class OrderView(View):
+    """Składanie zamówienia na produkty z koszyka"""
     def get(self, request):
+        """Tworzenie zamówienia i wysyłanie maila z potwierdzeniem zamówienia"""
         global cart_number
         characters = string.ascii_letters + string.digits
         code = ''.join(random.choice(characters) for i in range(10))
