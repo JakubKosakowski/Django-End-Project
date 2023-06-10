@@ -26,6 +26,20 @@ def array_merge(first_array, second_array):
         return first_array.union(second_array)
     return False
 
+
+def filter_products(phrase="", search_categories=None, min_price=0, max_price=5000):
+    """Fitrowanie produktów ze sklepu"""
+    if search_categories is None:
+        search_categories = []
+    products = Product.objects.all()
+    if len(search_categories) != 0:
+        products = products.filter(categories__in=search_categories)
+    if phrase != '':
+        products = products.filter(name__icontains=phrase)
+    products = products.filter(price__gte=min_price, price__lte=max_price)
+    return products
+
+
 class HomePageView(View):
     """Strona główna"""
     def get(self, request):
@@ -84,7 +98,7 @@ class LogoutView(View):
 class UserProfileView(LoginRequiredMixin, View):
     """Wyśiwtlenie profilu użytkownika"""
     def get(self, request):
-        """Wyśiwtlenie danych użytkownika na stronie"""
+        """Wyświetlenie danych użytkownika na stronie"""
         data = Customer.objects.get(account=request.user)
         return render(request, 'profile.html', {'data': data})
 
@@ -122,12 +136,7 @@ class OffersView(View):
         search_categories = request.POST.getlist('search_category')
         min_price = request.POST.get('price_min')
         max_price = request.POST.get('price_max')
-        products = Product.objects.all()
-        if len(search_categories) != 0:
-            products = products.filter(categories__in=search_categories)
-        if phrase != '':
-            products = products.filter(name__icontains=phrase)
-        products = products.filter(price__gte=min_price, price__lte=max_price)
+        products = filter_products(phrase, search_categories, min_price, max_price)
         return render(request, 'offers.html', {'products': products, 'categories': categories})
 
 
